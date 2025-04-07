@@ -9,7 +9,7 @@ import Settings from './pages/Settings';
 import Quiz from './pages/Quiz';
 import Workout from './pages/Workout';
 import Tracker from './pages/Tracker';
-import AIchatbot from './pages/AIchatbot';
+
 
 const client = generateClient<Schema>();
 
@@ -29,7 +29,6 @@ function App() {
             <Route path='/Quiz' element={<Quiz />} />
             <Route path='/Workout' element={<Workout />} />
             <Route path='/Tracker' element={<Tracker />} />
-            <Route path='/AIchatbot' element={<AIchatbot />} />
           </Routes>
         </div>
       </div>

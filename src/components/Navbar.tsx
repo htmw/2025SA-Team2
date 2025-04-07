@@ -8,7 +8,6 @@ const Navbar = () => {
             <img src={logo} alt="" width="90px" />
             <ul>
                 <Link to='/'><li>Home</li></Link>
-                <Link to='/AIchatbot'><li>AI Chatbot</li></Link>
                 <Link to='/Workout'><li>Workout</li></Link>
                 <Link to='/Quiz'><li>Quiz</li></Link>
                 <Link to='/Tracker'><li>Tracker</li></Link>
