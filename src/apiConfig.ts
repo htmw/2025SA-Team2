@@ -3,7 +3,7 @@ import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth';
 
 // Admin emails allowed to access the admin page
 const ADMIN_EMAILS = [
-  'muturiisaac@outlook.com',
+  '',
   '8020lux@gmail.com'
 ];
 
