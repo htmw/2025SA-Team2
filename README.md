@@ -1,25 +1,26 @@
-## AWS Amplify React+Vite Starter Template
+# 8020fit - Pace University Capstone Project
 
-This repository provides a starter template for creating applications using React+Vite and AWS Amplify, emphasizing easy setup for authentication, API, and database capabilities.
+***
 
-## Overview
+## Project Description
 
-This template equips you with a foundational React application integrated with AWS Amplify, streamlined for scalability and performance. It is ideal for developers looking to jumpstart their project with pre-configured AWS services like Cognito, AppSync, and DynamoDB.
+8020fit is a comprehensive web app designed to optimize nutrition and fitness tracking. End users will take in depth quiz on what the nutrition and fitness goals are as well as lifestyle habits as well as nutrition/food preferences. From there, they will put in their body measurements and goal body measurements and any other information. The AI will then create recommendations for you for diet and exercise. You will also be able to track weights added to workout, macros, etc. which will then create stunning visuals to give the end user a macro of their nutrition and fitness to see if they’re on track.
 
-## Features
+***
 
-- **Authentication**: Setup with Amazon Cognito for secure user authentication.
-- **API**: Ready-to-use GraphQL endpoint with AWS AppSync.
-- **Database**: Real-time database powered by Amazon DynamoDB.
+## Team FitForce Members
 
-## Deploying to AWS
 
-For detailed instructions on deploying your application, refer to the [deployment section](https://docs.amplify.aws/react/start/quickstart/#deploy-a-fullstack-app-to-aws) of our documentation.
 
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the LICENSE file.
+<table style="width:100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center" valign="center"><img src="Documents/Portraits/Rohan.jpg" width="250" height="280"><br />Rohan Patel (<a href="mailto:student pace email id">rp59653n@pace.edu</a>)</td>
+    <td align="center" valign="center"><img src="Documents/Portraits/Yaw.jpg" width="250" height="280"><br />Yaw Mensah (<a href="mailto:student pace email id">ym26692n@pace.edu</a>)</td>
+    <td align="center" valign="center"><img src="Documents/Portraits/Mustafa.jpg" width="250" height="280"><br />Mustafa Al-Tameemi (<a href="mailto:student pace email id">ma60965n@pace.edu</a>)</td>
+  </tr>
+  <tr>
+    <td align="center" valign="center"><img src="Documents/Portraits/Miguel.jpg" width="250" height="280"><br />Miguel Lugo (<a href="mailto:student pace email id">ml76049p@pace.edu</a>)</td>
+    <td align="center" valign="center"><img src="Documents/Portraits/Adrian.jpg" width="250" height="280"><br />Adrian Egasan (<a href="mailto:student pace email id">ae71253n@pace.edu</a>)</td>
+     <td align="center" valign="center"><img src="Documents/Portraits/FitForce%20logo.jpg" width="250" height="280"><br /></td>
+  </tr>
+</table>
