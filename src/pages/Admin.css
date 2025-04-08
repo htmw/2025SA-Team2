@@ -1,0 +1,321 @@
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.admin-controls input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.sync-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 150px;
+}
+
+.sync-button:hover {
+  background-color: #0069d9;
+}
+
+.sync-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.success-message {
+  color: #28a745;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.error-message {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.users-table th,
+.users-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.users-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.users-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.user-disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 5px;
+}
+
+.status-toggle {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.status-toggle.activate {
+  background-color: #28a745;
+}
+
+.status-toggle.deactivate {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.status-toggle:disabled,
+.delete-button:disabled {
+  background-color: #6c757d;
+  color: white;
+  cursor: not-allowed;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.delete-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.delete-modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.delete-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.delete-modal-buttons button:first-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-modal-buttons button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #6c757d;
+  color: white;
+}
+
+.delete-modal-buttons button:hover {
+  opacity: 0.9;
+}
+
+.admin-container h1 {
+  color: #194121;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #194121;
+  padding-bottom: 0.5rem;
+}
+
+.admin-actions {
+  display: flex;
+  margin-bottom: 1.5rem;
+  gap: 10px;
+}
+
+.search-input {
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  flex-grow: 1;
+  font-size: 1rem;
+}
+
+.refresh-button {
+  padding: 0.75rem 1rem;
+  background-color: #194121;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.refresh-button:hover {
+  background-color: #0d2c13;
+}
+
+.users-table-container {
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.users-table th {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #194121;
+}
+
+.users-table tr {
+  border-bottom: 1px solid #eee;
+}
+
+.users-table td {
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.status.active {
+  color: #194121;
+}
+
+.status.disabled {
+  color: #d32f2f;
+}
+
+.delete-button:disabled {
+  background-color: #e5e5e5;
+  color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.no-users {
+  text-align: center;
+  color: #757575;
+  padding: 2rem;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+}
+
+.modal h2 {
+  color: #194121;
+  margin-top: 0;
+}
+
+.modal .warning {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1.5rem;
+}
+
+.cancel-button {
+  padding: 0.5rem 1rem;
+  background-color: #757575;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.confirm-button {
+  padding: 0.5rem 1rem;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+} 

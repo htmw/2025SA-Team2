@@ -1,0 +1,138 @@
+.quiz-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.quiz-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.quiz-title {
+  font-size: 48px;
+  color: #2E7D32;
+  margin-bottom: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.progress-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.progress-step {
+  background-color: #f0f0f0;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 14px;
+  color: #666;
+}
+
+.progress-step.active {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.progress-line {
+  height: 2px;
+  background-color: #ddd;
+  flex-grow: 1;
+  margin: 0 10px;
+}
+
+.step-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.required {
+  color: #e53935;
+}
+
+.input-field, .select-field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.height-container {
+  display: flex;
+  gap: 20px;
+}
+
+.height-field {
+  flex: 1;
+}
+
+.sub-label {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.back-button {
+  background-color: #f5f5f5;
+  color: #555;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.next-button, .submit-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+.next-button:hover, .submit-button:hover {
+  background-color: #43a047;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #555;
+}
