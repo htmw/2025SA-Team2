@@ -10,6 +10,7 @@ import './Admin.css';
 const ADMIN_EMAILS = [
   'egasan21@gmail.com',
   '8020lux@gmail.com'
+  'rohanpatel749@gmail.com'
 ];
 
 // User interface
