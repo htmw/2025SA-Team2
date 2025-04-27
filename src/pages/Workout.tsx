@@ -219,46 +219,94 @@ function Workout() {
   if (!allExercises.length) return <div>No recommended exercises found.</div>;
 
   return (
-    <div style={{ padding: '1rem', textAlign: 'left', margin: '0', width: '100%' }}>
-      <h2>Your Recommended Workout</h2>
-      <p>Based on your quiz answers, here are some exercises you might try:</p>
+    <div style={{ padding: '1rem', textAlign: 'center', margin: '0 auto', maxWidth: '800px' }}>
+      <h2 style={{ marginBottom: '1rem', color: 'black' }}>Your Recommended Workout</h2>
+      <p style={{ marginBottom: '1.5rem', color: 'black' }}>
+        Based on your quiz answers, here are some exercises you might try:
+      </p>
       {explanation && (
-        <div style={{ backgroundColor: '#e8f4fc', padding: '1rem', borderRadius: '10px', marginBottom: '1rem' }}>
+        <div
+          style={{
+            backgroundColor: '#e8f4fc',
+            padding: '1rem',
+            borderRadius: '10px',
+            marginBottom: '1.5rem',
+            textAlign: 'left',
+          }}
+        >
           <strong>Why these workouts?</strong>
           <p>{explanation}</p>
         </div>
       )}
       {popupMessage && (
-        <div style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#FF4D4D', color: 'white', padding: '10px 20px', borderRadius: '5px', zIndex: 1000 }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: '#FF4D4D',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            zIndex: 1000,
+          }}
+        >
           {popupMessage}
         </div>
       )}
-      <ul>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px',
+        }}
+      >
         {allExercises.map((ex) => (
-          <li key={ex.id} style={{ marginBottom: "20px" }}>
-            <strong>{ex.name}</strong>
-            <p>{ex.description}</p>
+          <div
+            key={ex.id}
+            style={{
+              border: '1px solid #ddd',
+              borderRadius: '10px',
+              padding: '1rem',
+              backgroundColor: '#fff',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              textAlign: 'center',
+            }}
+          >
+            <h3 style={{ marginBottom: '0.5rem', color: '#007BFF' }}>{ex.name}</h3>
+            <p style={{ marginBottom: '1rem', color: '#555' }}>{ex.description}</p>
             {ex.videoUrl ? (
               <img
                 src={ex.videoUrl}
                 alt={ex.name}
-                width="360"
-                height="200"
-                style={{ objectFit: 'cover', borderRadius: '10px' }}
+                width="100%"
+                height="300"
+                style={{
+                  objectFit: 'cover',
+                  borderRadius: '10px',
+                  marginBottom: '1rem',
+                }}
               />
             ) : (
-              <p>No visual found</p>
+              <p style={{ color: '#999' }}>No visual found</p>
             )}
-            <br />
             <button
               onClick={() => handleAddToRoutine(ex)}
-              style={{ marginTop: '10px', padding: '0.5rem 1rem', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: '#007BFF',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}
             >
               Add Workout to Routine
             </button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
