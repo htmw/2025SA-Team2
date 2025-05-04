@@ -1,5 +1,5 @@
 body, html {
-  overflow-x: hidden; /* Prevent horizontal scrolling on the entire page */
+  overflow-x: hidden; 
   margin: 0;
   padding: 0;
 }
@@ -28,134 +28,133 @@ body, html {
 /* Center the strength and cardio buttons */
 .button-section {
   display: flex;
-  justify-content: center; /* Centers the buttons horizontally */
-  align-items: center; /* Centers the buttons vertically */
-  flex-direction: column; /* Stack buttons vertically if needed */
-  height: auto; /* Adjust height dynamically */
-  padding-top: 20px; /* Default padding */
-  position: relative; /* Ensure proper stacking of child elements */
-  transition: padding-top 0.3s ease; /* Smooth transition */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: auto;
+  padding-top: 20px;
+  position: relative;
+  transition: padding-top 0.3s ease;
 }
 
 .button-section.form-open {
-  padding-top: 10px; /* Adjust padding when the form is open */
+  padding-top: 10px;
 }
 
 .button-section .button {
-  margin: 10px 0; /* Add spacing between buttons */
+  margin: 10px 0;
 }
 
 /* Form Container */
 .form-container {
   display: flex;
   flex-direction: column;
-  padding: 10px; /* Reduce padding inside the form */
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #f9f9f9;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  max-width: 300px; /* Slightly reduce the width */
-  margin: 10px auto; /* Reduce vertical margin */
-  position: relative; /* Ensure proper stacking */
+  max-width: 300px;
+  margin: 10px auto;
+  position: relative;
 }
 
 .form-title {
   text-align: center;
   color: #333;
-  font-size: 20px; /* Keep the font size for legibility */
-  margin-bottom: 10px; /* Reduce spacing below the title */
+  font-size: 20px;
+  margin-bottom: 10px;
 }
 
 .form-label {
   display: flex;
   flex-direction: column;
-  gap: 2px; /* Reduce spacing between label and input */
+  gap: 2px;
   color: #555;
-  font-size: 14px; /* Keep the font size for legibility */
+  font-size: 14px;
 }
 
 .form-input {
-  padding: 6px; /* Reduce padding inside input fields */
+  padding: 6px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 14px; /* Keep the font size for legibility */
+  font-size: 14px;
 }
 
 .form-button {
-  padding: 6px 12px; /* Reduce padding for the button */
+  padding: 6px 12px;
   background-color: #007BFF;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px; /* Keep the font size for legibility */
+  font-size: 14px;
 }
 
 /* Workout History Section */
 .workout-history {
-  width: 100%; /* Ensures the container spans the full width */
+  width: 100%;
   display: flex;
-  flex-direction: column; /* Stacks the title and cards vertically */
-  align-items: center; /* Centers child elements horizontally */
+  flex-direction: column;
+  align-items: center;
   margin-top: 0px;
-  transition: margin-top 0.3s ease; /* Smooth transition for shifting */
+  transition: margin-top 0.3s ease;
 }
 
 .workout-history.shifted {
-  margin-top: 10px; /* Adjust this value to shift the title and cards together */
+  margin-top: 10px;
 }
 
 .workout-history-title {
-  text-align: center; /* Centers the title */
-  font-size: 1.5rem; /* Adjusted font size for title */
+  text-align: center;
+  font-size: 1.5rem;
   color: #000000;
 }
 
 .workout-history-container {
   display: flex;
-  flex-direction: row; /* Keeps the cards horizontally aligned */
-  gap: 20px; /* Adds spacing between cards */
-  overflow-x: hidden; /* Enables horizontal scrolling */
+  flex-direction: row;
+  gap: 20px;
+  overflow-x: hidden;
   padding: 10px;
-  width: 100%; /* Set a consistent width */
-  max-width: 800px; /* Optional: Limit the maximum width */
-  min-width: 800px; /* Ensure the container doesn't shrink below this width */
-  margin: 0 auto; /* Center the container horizontally */
-  box-sizing: border-box; /* Include padding in width calculation */
+  width: 100%;
+  max-width: 800px;
+  min-width: 800px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .workout-history-container:has(.workout-card:nth-child(n+4)) {
-    overflow-x: auto; /* Enable scrolling only if there are 3 or more cards */
-  }
+  overflow-x: auto;
+}
 
-/* Customize the scrollbar */
 .workout-history-container::-webkit-scrollbar {
-  height: 10px; /* Adjust the height of the horizontal scrollbar */
-  background: transparent; /* Remove the white background */
+  height: 10px;
+  background: transparent;
 }
 
 .workout-history-container::-webkit-scrollbar-thumb {
-  background-color: #ccc; /* Color of the scrollbar thumb */
-  border-radius: 4px; /* Rounded edges for the scrollbar thumb */
-  border: 2px solid transparent; /* Optional: Add spacing around the thumb */
+  background-color: #ccc;
+  border-radius: 4px;
+  border: 2px solid transparent;
 }
 
 .workout-history-container::-webkit-scrollbar-track {
-  background: transparent; /* Remove the white background of the track */
+  background: transparent;
 }
 
 .workout-history-container::-webkit-scrollbar-button {
-  display: none; /* Hides the arrows */
+  display: none;
 }
 
 .workout-history-container.shifted {
-  margin-top: 10px; 
+  margin-top: 10px;
   transition: margin-top 0.3s ease;
 }
 
 .workout-card {
-  min-width: 250px; /* Ensure each card has a minimum width */
-  flex-shrink: 0; /* Prevent cards from shrinking */
+  min-width: 250px;
+  flex-shrink: 0;
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 10px;
