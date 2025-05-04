@@ -1,9 +1,9 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
 import { SpoonacularService } from '../services/spoonacularService';
-import { DIET_TYPES, INTOLERANCES, CUISINE_TYPES } from '../types/diet';
-import { Card } from '@mui/material';
+import { DIET_TYPES, INTOLERANCES } from '../types/diet';
+import { Card, Button, Modal, Box, Typography, CardMedia, CardContent, CardActions } from '@mui/material';
 import { fetchUserAttributes } from 'aws-amplify/auth';
 
 interface DietPreferences {
@@ -14,8 +14,6 @@ interface DietPreferences {
   proteinGramsPerDay: number;
   carbGramsPerDay: number;
   fatGramsPerDay: number;
-  maxReadyTime: number;
-  cuisinePreferences: string[];
   lowSodium: boolean;
   lowSugar: boolean;
   highProtein: boolean;
@@ -43,9 +41,10 @@ interface MealPlanState {
 
 interface MealPlanDay {
   meals: {
-  id: number;
+    id: number;
     title: string;
     image: string;
+    imageType?: string;
     readyInMinutes: number;
     nutrition: {
       calories: number;
@@ -53,6 +52,9 @@ interface MealPlanDay {
       carbs: number;
       fat: number;
     };
+    instructions?: string;
+    summary?: string;
+    sourceUrl?: string;
   }[];
   nutrients: {
     calories: number;
@@ -62,9 +64,68 @@ interface MealPlanDay {
   };
 }
 
+// Define a proper type for the SpoonacularService response
+// interface SpoonacularMealPlanResponse {
+//   week: SpoonacularMealPlanDay[];
+// }
+
+interface SpoonacularMealPlanDay {
+  meals: SpoonacularMealPlanMeal[];
+  nutrients: SpoonacularNutrition;
+}
+
+interface SpoonacularMealPlanMeal {
+  id: number;
+  title: string;
+  image: string;
+  imageType?: string;
+  readyInMinutes: number;
+  nutrition: SpoonacularNutrition | null;
+  sourceUrl?: string;
+  summary?: string;
+  instructions?: string;
+  analyzedInstructions?: Array<Record<string, unknown>>;
+}
+
+interface SpoonacularNutrition {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+// Define the type for analyzedInstructions steps at the top of the file:
+interface SpoonacularInstructionStep {
+  number: number;
+  step: string;
+}
+
 const client = generateClient<Schema>();
 
-const MealPlan: React.FC = () => {
+// Function to convert SpoonacularMealPlanDay[] to MealPlanDay[]
+function convertSpoonacularMealPlanToMealPlan(spoonacularMealPlanDays: SpoonacularMealPlanDay[]): MealPlanDay[] {
+  return spoonacularMealPlanDays.map(day => ({
+    meals: day.meals.map(meal => ({
+      id: meal.id,
+      title: meal.title,
+      image: meal.image,
+      imageType: meal.imageType,
+      readyInMinutes: meal.readyInMinutes,
+      nutrition: meal.nutrition || {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0
+      },
+      sourceUrl: meal.sourceUrl,
+      summary: meal.summary,
+      instructions: meal.instructions
+    })),
+    nutrients: day.nutrients
+  }));
+}
+
+const MealPlan = () => {
   const [state, setState] = useState<MealPlanState>({
     step: 'quiz',
     preferences: {
@@ -75,8 +136,6 @@ const MealPlan: React.FC = () => {
       proteinGramsPerDay: 150,
       carbGramsPerDay: 200,
       fatGramsPerDay: 65,
-      maxReadyTime: 60,
-      cuisinePreferences: [],
       lowSodium: false,
       lowSugar: false,
       highProtein: false,
@@ -93,6 +152,10 @@ const MealPlan: React.FC = () => {
   // Add state for tracking saved preferences and meal plans
   const [savedPreferences, setSavedPreferences] = useState<boolean>(false);
   const [mealPlanDays, setMealPlanDays] = useState<MealPlanDay[]>([]);
+
+  // --- Add State for Modal ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMeal, setSelectedMeal] = useState<MealPlanDay['meals'][0] | null>(null);
 
   // Fetch onboarding data when component mounts
   useEffect(() => {
@@ -159,14 +222,12 @@ const MealPlan: React.FC = () => {
             ...prev,
             preferences: {
               dietType: savedPrefs.dietType || prev.preferences.dietType,
-              intolerances: savedPrefs.intolerances || prev.preferences.intolerances,
-              excludedIngredients: savedPrefs.excludedIngredients || prev.preferences.excludedIngredients,
+              intolerances: (savedPrefs.intolerances?.filter((item): item is string => item !== null) ?? []) || prev.preferences.intolerances,
+              excludedIngredients: (savedPrefs.excludedIngredients?.filter((item): item is string => item !== null) ?? []) || prev.preferences.excludedIngredients,
               caloriesPerDay: savedPrefs.caloriesPerDay || prev.preferences.caloriesPerDay,
               proteinGramsPerDay: savedPrefs.proteinGramsPerDay || prev.preferences.proteinGramsPerDay,
               carbGramsPerDay: savedPrefs.carbGramsPerDay || prev.preferences.carbGramsPerDay,
               fatGramsPerDay: savedPrefs.fatGramsPerDay || prev.preferences.fatGramsPerDay,
-              maxReadyTime: savedPrefs.maxReadyTime || prev.preferences.maxReadyTime,
-              cuisinePreferences: savedPrefs.cuisinePreferences || prev.preferences.cuisinePreferences,
               lowSodium: savedPrefs.lowSodium || prev.preferences.lowSodium,
               lowSugar: savedPrefs.lowSugar || prev.preferences.lowSugar,
               highProtein: savedPrefs.highProtein || prev.preferences.highProtein,
@@ -296,6 +357,17 @@ const MealPlan: React.FC = () => {
     }
   };
 
+  // --- Add Modal Handler Functions ---
+  const handleOpenModal = (meal: MealPlanDay['meals'][0]) => {
+    setSelectedMeal(meal);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedMeal(null);
+  };
+
   // Add this section for the meal plan display
   const MealPlanDisplay = () => {
     if (loading) {
@@ -305,6 +377,22 @@ const MealPlan: React.FC = () => {
     if (!mealPlanDays || !mealPlanDays.length) {
       return <div>No meal plan generated yet. Please go back and generate one.</div>;
     }
+
+    // Style for the modal content box
+    const modalStyle = {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '80%',
+      maxWidth: 600,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+      maxHeight: '80vh', // Limit height
+      overflowY: 'auto' // Make content scrollable
+    };
 
     return (
       <div className="meal-plan-display" style={{
@@ -365,6 +453,11 @@ const MealPlan: React.FC = () => {
           </div>
         </div>
         
+        {/* Explanation Note */}
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 3, mt: -2, textAlign: 'center' }}>
+          Note: The plan aims for these daily targets by searching for recipes matching approximate per-meal goals (e.g., 30% breakfast, 40% lunch, 30% dinner). Actual daily totals may vary slightly.
+        </Typography>
+        
         {/* Daily Meal Plans */}
         {Array.isArray(mealPlanDays) && (
           <div className="meal-plan-days">
@@ -378,37 +471,50 @@ const MealPlan: React.FC = () => {
                   gap: '16px'
                 }}>
                   {Array.isArray(day.meals) && day.meals.map((meal) => (
-                    <div key={meal.id} className="meal-card" style={{
-                      border: '1px solid #eee',
-                      borderRadius: '8px',
-                      overflow: 'hidden'
-                    }}>
-                      <img 
-                        src={meal.image} 
-                        alt={meal.title}
-                        style={{
-                          width: '100%',
-                          height: '200px',
-                          objectFit: 'cover'
-                        }}
-                      />
-                      <div style={{ padding: '16px' }}>
-                        <h4>{meal.title}</h4>
-                        <p>Ready in {meal.readyInMinutes} minutes</p>
-                        <div className="meal-nutrition" style={{
-                          display: 'grid',
-                          gridTemplateColumns: 'repeat(2, 1fr)',
-                          gap: '8px',
-                          fontSize: '0.9em',
-                          marginTop: '8px'
-                        }}>
-                          <div>Calories: {meal.nutrition?.calories || 0}</div>
-                          <div>Protein: {meal.nutrition?.protein || 0}g</div>
-                          <div>Carbs: {meal.nutrition?.carbs || 0}g</div>
-                          <div>Fat: {meal.nutrition?.fat || 0}g</div>
-                        </div>
-                      </div>
-                    </div>
+                     meal.id < 0 ? (
+                      // Render Placeholder Card
+                      <Card key={meal.id} sx={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#f0f0f0' }}>
+                        <CardContent sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Typography variant="body2" color="text.secondary">
+                            {meal.title} 
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      // Render Normal Meal Card
+                      <Card key={meal.id} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                        <CardMedia
+                          component="img"
+                          height="200"
+                          image={meal.image}
+                          alt={meal.title}
+                          sx={{ objectFit: 'cover' }}
+                        />
+                        <CardContent sx={{ flexGrow: 1 }}>
+                          <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
+                            {meal.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            Ready in {meal.readyInMinutes} minutes
+                          </Typography>
+                          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1 }}>
+                             <Typography variant="caption" color="text.secondary">Calories: {meal.nutrition?.calories || 0}</Typography>
+                             <Typography variant="caption" color="text.secondary">Protein: {meal.nutrition?.protein || 0}g</Typography>
+                             <Typography variant="caption" color="text.secondary">Carbs: {meal.nutrition?.carbs || 0}g</Typography>
+                             <Typography variant="caption" color="text.secondary">Fat: {meal.nutrition?.fat || 0}g</Typography>
+                          </Box>
+                        </CardContent>
+                        <CardActions sx={{ justifyContent: 'flex-start', pt: 0, pb: 2, pl: 2 }}>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleOpenModal(meal)}
+                          >
+                            View Recipe
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    )
                   ))}
                 </div>
 
@@ -448,68 +554,54 @@ const MealPlan: React.FC = () => {
         >
           {savedPreferences ? 'Preferences Saved!' : 'Save Preferences'}
         </button>
+
+         {/* --- Add Recipe Detail Modal --- */}
+         <Modal
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          aria-labelledby="recipe-modal-title"
+          aria-describedby="recipe-modal-description"
+        >
+          <Box sx={modalStyle}>
+            {selectedMeal && (
+              <React.Fragment>
+                <Typography id="recipe-modal-title" variant="h6" component="h2">
+                  {selectedMeal.title}
+                </Typography>
+                {/* Use dangerouslySetInnerHTML to render potential HTML */}
+                <Typography id="recipe-modal-description" component="div" sx={{ mt: 2, maxHeight: '60vh', overflowY: 'auto' }}>
+                  {selectedMeal.analyzedInstructions && Array.isArray(selectedMeal.analyzedInstructions) && selectedMeal.analyzedInstructions.length > 0 && selectedMeal.analyzedInstructions[0].steps ? (
+                    <ol style={{ paddingLeft: '1.5em' }}>
+                      {(selectedMeal.analyzedInstructions[0].steps as SpoonacularInstructionStep[]).map((step) => (
+                        <li key={step.number} style={{ marginBottom: '0.75em' }}>{step.step}</li>
+                      ))}
+                    </ol>
+                  ) : selectedMeal.instructions ? (
+                    <div dangerouslySetInnerHTML={{ __html: selectedMeal.instructions }} />
+                  ) : selectedMeal.summary ? (
+                    <div dangerouslySetInnerHTML={{ __html: selectedMeal.summary }} />
+                  ) : (
+                    'No detailed instructions or summary available.'
+                  )}
+                </Typography>
+                 {/* Link to original recipe */}
+                 {selectedMeal.sourceUrl && (
+                    <Typography sx={{ mt: 2 }}>
+                        <a href={selectedMeal.sourceUrl} target="_blank" rel="noopener noreferrer">
+                            View Full Recipe on Source Website
+                        </a>
+                    </Typography>
+                 )}
+                 <Button onClick={handleCloseModal} sx={{ mt: 3 }}>
+                   Close
+                 </Button>
+              </React.Fragment>
+            )}
+          </Box>
+        </Modal>
       </div>
     );
   };
-
-  // Add these additional preference options to the quiz section
-  const AdditionalPreferences = () => (
-    <>
-      <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-          Maximum Cooking Time (minutes)
-        </label>
-        <input
-          type="number"
-          value={state.preferences.maxReadyTime}
-          onChange={(e) => setState(prev => ({
-            ...prev,
-            preferences: { ...prev.preferences, maxReadyTime: parseInt(e.target.value) }
-          }))}
-          style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ddd'
-          }}
-        />
-      </div>
-
-      <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-          Cuisine Preferences
-        </label>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-          gap: '8px'
-        }}>
-          {CUISINE_TYPES.map(cuisine => (
-            <label key={cuisine.value} style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <input
-                type="checkbox"
-                checked={state.preferences.cuisinePreferences.includes(cuisine.value)}
-                onChange={(e) => {
-                  const newCuisines = e.target.checked
-                    ? [...state.preferences.cuisinePreferences, cuisine.value]
-                    : state.preferences.cuisinePreferences.filter(c => c !== cuisine.value);
-                  setState(prev => ({
-                    ...prev,
-                    preferences: { ...prev.preferences, cuisinePreferences: newCuisines }
-                  }));
-                }}
-              />
-              {cuisine.label}
-            </label>
-          ))}
-        </div>
-      </div>
-    </>
-  );
 
   return (
     <div className="page-container">
@@ -551,7 +643,7 @@ const MealPlan: React.FC = () => {
             </label>
             <select
               value={state.preferences.dietType}
-              onChange={(e) => setState(prev => ({
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setState(prev => ({
                 ...prev,
                 preferences: { ...prev.preferences, dietType: e.target.value }
               }))}
@@ -589,7 +681,7 @@ const MealPlan: React.FC = () => {
                   <input
                     type="checkbox"
                     checked={state.preferences.intolerances.includes(intolerance.value)}
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const newIntolerances = e.target.checked
                         ? [...state.preferences.intolerances, intolerance.value]
                         : state.preferences.intolerances.filter(i => i !== intolerance.value);
@@ -605,6 +697,31 @@ const MealPlan: React.FC = () => {
             </div>
           </div>
 
+          {/* Excluded Ingredients Input */}
+          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem' }}>
+              Excluded Ingredients (comma-separated)
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. shellfish, olives, peanuts"
+              value={state.preferences.excludedIngredients.join(', ')}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const ingredients = e.target.value.split(',').map((item: string) => item.trim()).filter((item: string) => item);
+                setState(prev => ({
+                  ...prev,
+                  preferences: { ...prev.preferences, excludedIngredients: ingredients }
+                }));
+              }}
+              style={{
+                width: '100%',
+                padding: '8px',
+                borderRadius: '4px',
+                border: '1px solid #ddd'
+              }}
+            />
+          </div>
+
           {/* Meal Plan Duration */}
           <div className="form-group" style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem' }}>
@@ -615,7 +732,7 @@ const MealPlan: React.FC = () => {
               min="1"
               max="30"
               value={state.daysCount}
-              onChange={(e) => setState(prev => ({
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setState(prev => ({
                 ...prev,
                 daysCount: parseInt(e.target.value) || 7
               }))}
@@ -671,10 +788,10 @@ const MealPlan: React.FC = () => {
                 
                 console.log("Calling Spoonacular API with preferences:", updatedPreferences);
                 
-                // Call the API
+                // Call the NEW API function
                 const mealPlan = await SpoonacularService.generateMealPlan(updatedPreferences);
                 
-                console.log("Received meal plan response:", mealPlan);
+                console.log("Received complex meal plan response:", mealPlan);
                 
                 // Check if response is valid
                 if (!mealPlan) {
@@ -692,14 +809,15 @@ const MealPlan: React.FC = () => {
                 
                 // Update state only after successfully receiving data
                 console.log("Setting meal plan days:", mealPlan.week);
-                setMealPlanDays(mealPlan.week);
+                const convertedMealPlanDays = convertSpoonacularMealPlanToMealPlan(mealPlan.week as SpoonacularMealPlanDay[]);
+                setMealPlanDays(convertedMealPlanDays);
                 
                 // Then update overall state including step change
                 console.log("Updating state and changing to plan view");
                 setState(prev => ({ 
                   ...prev, 
                   preferences: updatedPreferences,
-                  mealPlan: mealPlan.week,
+                  mealPlan: convertedMealPlanDays,
                   step: 'plan' 
                 }));
               } catch (err) {
@@ -723,9 +841,7 @@ const MealPlan: React.FC = () => {
           >
             {loading ? 'Generating...' : 'Generate Meal Plan'}
           </button>
-
-          <AdditionalPreferences />
-          </div>
+        </div>
       ) : (
         <MealPlanDisplay />
       )}
@@ -739,7 +855,7 @@ const MealPlan: React.FC = () => {
           marginTop: '16px'
         }}>
           {error}
-          </div>
+        </div>
       )}
     </div>
   );
